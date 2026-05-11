@@ -1,0 +1,14 @@
+Which shard failed first and why?
+In the early days the user based and channel based shards failed immediately cause all the traffic from one influencer or one viral channel got dumped onto a single machine causing a 100 percent load hotspot.
+
+Which strategy looked good but failed under spike?
+Channel based looked logical cause people chat in channels but under a cricket final spike it failed completely cause that one channel overwhelmed its assigned server while the rest did nothing.
+
+What happens if shards increase from 3 to 10?
+With hash based sharding if we change the number of shards the modulo math changes for everything. All the old messages will hash to different shard ids now. So the system breaks unless we migrate almost all the data to new servers which is a nightmare.
+
+What breaks when one shard goes down?
+When one shard dies in a hash based system the read queries break. Since we spread the data everywhere to fix write hotspots checking a channels history requires asking every single shard. If one is down the chat history gets holes in it and we lose consistency.
+
+Cross shard query performance
+To fetch the last 10 messages of a channel I had to literally loop through every active shard filter the messages and combine them. I checked 2 active shards cause 1 was dead. This means read operations become very expensive cause we have to scan the entire network instead of just asking one server.
